@@ -11,23 +11,31 @@ constructor (title, content, imageUrl, creator, createdAt){
         this.createdAt = createdAt;
 }
 
-async savePost (){
+async savePost ()
+{
     
     const db = getDb();
     const postCollection = db.collection('posts');
 
     try{
 
-        if(this._id){
+        if(this._id)
+         {
+           
+            // update the post if it already exist in the database
             const result = await postCollection.updateOne( { _id: new ObjectId(this._id) },
             { $set: this });
 
+            // here i return the post after it has been updated in the database
             return  await postCollection.findOne({ _id: new ObjectId(this._id) });;
         }
 
-        else{
-        const result = postCollection.insertOne(this);
-        return await postCollection.findOne({ _id: new ObjectId(this._id) });}
+        else
+        {   
+            // Here a new post is inserted into the database since the codition above was not met
+            const result = postCollection.insertOne(this);
+            return await postCollection.findOne({ _id: new ObjectId(this._id) });
+        }
 
     }
     catch (error) {
